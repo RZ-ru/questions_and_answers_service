@@ -3,13 +3,13 @@ package repository
 import "gorm.io/gorm"
 
 type Repository struct {
-	Questions QuestionsRepository
-	Answers   AnswersRepository
+	Questions QuestionRepository
+	Answers   AnswerRepository
 }
 
 func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
-		Questions: NewQuestionsRepository(db),
-		Answers:   NewAnswersRepository(db),
+		Questions: NewQuestionRepository(db),
+		Answers:   NewAnswerRepository(db),
 	}
 }

@@ -30,7 +30,3 @@ func Connect(cfg Config) (*gorm.DB, error) {
 	}
 	return db, nil
 }
-
-func NewDB(dsn string) (*gorm.DB, error) {
-	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
-}

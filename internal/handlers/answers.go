@@ -5,18 +5,18 @@ import (
 	"net/http"
 	"strconv"
 
-	"qa_service/internal/models"
-	"qa_service/internal/repository"
+	"qa_service/internal/services"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/rs/zerolog/log"
 )
 
 type AnswerHandler struct {
-	Repo *repository.Repository
+	Service services.AnswerService
 }
 
-func NewAnswerHandler(repo *repository.Repository) *AnswerHandler {
-	return &AnswerHandler{Repo: repo}
+func NewAnswerHandler(s services.AnswerService) *AnswerHandler {
+	return &AnswerHandler{Service: s}
 }
 
 func (h *AnswerHandler) CreateAnswer(w http.ResponseWriter, r *http.Request) {
@@ -29,26 +29,28 @@ func (h *AnswerHandler) CreateAnswer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		log.Warn().
+			Err(err).
+			Msg("invalid json in CreateAnswer")
 		http.Error(w, "invalid json", http.StatusBadRequest)
 		return
 	}
 
-	if input.Text == "" || input.UserID == "" {
-		http.Error(w, "fields required", http.StatusBadRequest)
-		return
-	}
-
-	ans := &models.Answer{
-		QuestionID: uint(qid),
-		UserID:     input.UserID,
-		Text:       input.Text,
-	}
-
-	if err := h.Repo.Answers.Create(ans); err != nil {
+	ans, err := h.Service.Create(uint(qid), input.UserID, input.Text)
+	if err != nil {
+		log.Warn().
+			Err(err).
+			Uint("question_id", uint(qid)).
+			Str("user_id", input.UserID).
+			Msg("failed to create answer")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
+	log.Info().
+		Uint("answer_id", ans.ID).
+		Uint("question_id", ans.QuestionID).
+		Msg("answer created")
 	json.NewEncoder(w).Encode(ans)
 }
 
@@ -56,8 +58,14 @@ func (h *AnswerHandler) GetAnswer(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, _ := strconv.Atoi(idStr)
 
-	ans, err := h.Repo.Answers.GetByID(uint(id))
-	if err != nil || ans == nil {
+	ans, err := h.Service.GetByID(uint(id))
+	if err != nil {
+		log.Error().Err(err).Uint("id", uint(id)).Msg("failed to get answer")
+		http.Error(w, "not found", http.StatusNotFound)
+		return
+	}
+	if ans == nil {
+		log.Warn().Uint("id", uint(id)).Msg("answer not found")
 		http.Error(w, "not found", http.StatusNotFound)
 		return
 	}
@@ -69,7 +77,10 @@ func (h *AnswerHandler) DeleteAnswer(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, _ := strconv.Atoi(idStr)
 
-	if err := h.Repo.Answers.Delete(uint(id)); err != nil {
+	if err := h.Service.Delete(uint(id)); err != nil {
+		log.Error().
+			Err(err).Uint("id", uint(id)).
+			Msg("failed to delete answer")
 		http.Error(w, "delete failed", http.StatusInternalServerError)
 		return
 	}

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type QuestionsRepository interface {
+type QuestionRepository interface {
 	Create(question *models.Question) error
 	GetAll() ([]models.Question, error)
 	GetByID(id uint) (*models.Question, error)
@@ -19,7 +19,7 @@ type questionsRepository struct {
 	db *gorm.DB
 }
 
-func NewQuestionsRepository(db *gorm.DB) QuestionsRepository {
+func NewQuestionRepository(db *gorm.DB) QuestionRepository {
 	return &questionsRepository{db: db}
 }
 
