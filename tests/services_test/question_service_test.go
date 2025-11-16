@@ -9,28 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// ---- MOCK REPOSITORY ----
-
-type mockQuestionRepo struct {
-	CreateFunc func(q *models.Question) error
-}
-
-func (m *mockQuestionRepo) Create(q *models.Question) error {
-	return m.CreateFunc(q)
-}
-func (m *mockQuestionRepo) GetAll() ([]models.Question, error) {
-	return nil, nil
-}
-func (m *mockQuestionRepo) GetByID(id uint) (*models.Question, error) {
-	return nil, nil
-}
-func (m *mockQuestionRepo) Delete(id uint) error {
-	return nil
-}
-
-// ---- TESTS ----
-
-func TestQuestionServiceCreate_EmptyText(t *testing.T) {
+func TestQuestionService_Create_EmptyText(t *testing.T) {
 	repo := &mockQuestionRepo{}
 	svc := services.NewQuestionService(repo)
 
@@ -40,18 +19,19 @@ func TestQuestionServiceCreate_EmptyText(t *testing.T) {
 	assert.EqualError(t, err, "text is required")
 }
 
-func TestQuestionServiceCreate_Success(t *testing.T) {
+func TestQuestionService_Create_Success(t *testing.T) {
 	repo := &mockQuestionRepo{
 		CreateFunc: func(q *models.Question) error {
-			q.ID = 10
+			q.ID = 42
 			return nil
 		},
 	}
+
 	svc := services.NewQuestionService(repo)
 
-	q, err := svc.Create("Hello")
+	q, err := svc.Create("hello")
 
 	assert.NoError(t, err)
-	assert.Equal(t, uint(10), q.ID)
-	assert.Equal(t, "Hello", q.Text)
+	assert.Equal(t, uint(42), q.ID)
+	assert.Equal(t, "hello", q.Text)
 }
