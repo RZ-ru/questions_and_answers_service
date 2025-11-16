@@ -75,7 +75,7 @@ goose -dir ./migrations postgres \
 # 📁 Структура проекта
 
 ```
-cmp/
+cmd/
 └── qa_service/
     └── main.go
 
