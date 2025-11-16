@@ -59,7 +59,6 @@ func (s *questionService) GetAll() ([]models.Question, error) {
 			Msg("failed to load questions")
 	}
 	return qs, err
-	//return s.repo.GetAll()
 }
 
 func (s *questionService) GetByID(id uint) (*models.Question, error) {

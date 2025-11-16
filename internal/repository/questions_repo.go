@@ -23,19 +23,16 @@ func NewQuestionRepository(db *gorm.DB) QuestionRepository {
 	return &questionsRepository{db: db}
 }
 
-// CREATE
 func (r *questionsRepository) Create(q *models.Question) error {
 	return r.db.Create(q).Error
 }
 
-// GET ALL
 func (r *questionsRepository) GetAll() ([]models.Question, error) {
 	var questions []models.Question
 	err := r.db.Order("created_at DESC").Find(&questions).Error
 	return questions, err
 }
 
-// GET BY ID + preload answers
 func (r *questionsRepository) GetByID(id uint) (*models.Question, error) {
 	var q models.Question
 	err := r.db.
@@ -49,7 +46,6 @@ func (r *questionsRepository) GetByID(id uint) (*models.Question, error) {
 	return &q, err
 }
 
-// DELETE (cascade because of models)
 func (r *questionsRepository) Delete(id uint) error {
 	return r.db.Delete(&models.Question{}, id).Error
 }

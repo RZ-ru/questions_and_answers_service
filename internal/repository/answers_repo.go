@@ -22,13 +22,10 @@ func NewAnswerRepository(db *gorm.DB) AnswerRepository {
 	return &answersRepository{db: db}
 }
 
-// CREATE with check question exists
-// надо будет перенести проверку существования вопроса в сервисный слой
 func (r *answersRepository) Create(a *models.Answer) error {
 	return r.db.Create(a).Error
 }
 
-// GET BY ID
 func (r *answersRepository) GetByID(id uint) (*models.Answer, error) {
 	var ans models.Answer
 	err := r.db.First(&ans, id).Error
@@ -39,7 +36,6 @@ func (r *answersRepository) GetByID(id uint) (*models.Answer, error) {
 	return &ans, err
 }
 
-// DELETE
 func (r *answersRepository) Delete(id uint) error {
 	return r.db.Delete(&models.Answer{}, id).Error
 }
