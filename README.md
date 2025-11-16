@@ -58,15 +58,9 @@ goose -dir ./migrations postgres "host=localhost user=postgres password=postgres
 go run ./cmd/qa_service/main.go
 ```
 
-```
-
-После запуска API будет доступно по адресу:
-
-```
+###После запуска API будет доступно по адресу:
 
 [http://localhost:8080](http://localhost:8080)
-
-````
 
 ## 3️⃣ Проверка миграций вручную (опционально)
 
