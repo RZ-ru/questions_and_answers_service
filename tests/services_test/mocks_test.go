@@ -2,7 +2,7 @@ package services_test
 
 import "qa_service/internal/models"
 
-// ========== MOCK QUESTION REPOSITORY ==========
+// ========== MOCK QUESTIONS REPOSITORY ==========
 
 type mockQuestionRepo struct {
 	CreateFunc  func(q *models.Question) error
@@ -39,7 +39,7 @@ func (m *mockQuestionRepo) Delete(id uint) error {
 	return nil
 }
 
-// ========== MOCK ANSWER REPOSITORY ==========
+// ========== MOCK ANSWERS REPOSITORY ==========
 
 type mockAnswerRepo struct {
 	CreateFunc  func(a *models.Answer) error

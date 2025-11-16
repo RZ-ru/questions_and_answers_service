@@ -13,21 +13,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// ---- MOCK SERVICE ----
-
-type mockQuestionService struct {
-	GetByIDFunc func(id uint) (*models.Question, error)
-}
-
-func (m *mockQuestionService) Create(text string) (*models.Question, error) { return nil, nil }
-func (m *mockQuestionService) GetAll() ([]models.Question, error)           { return nil, nil }
-func (m *mockQuestionService) GetByID(id uint) (*models.Question, error) {
-	return m.GetByIDFunc(id)
-}
-func (m *mockQuestionService) Delete(id uint) error { return nil }
-
-// ---- TEST ----
-
 func TestGetQuestionHandler(t *testing.T) {
 	mockSvc := &mockQuestionService{
 		GetByIDFunc: func(id uint) (*models.Question, error) {
