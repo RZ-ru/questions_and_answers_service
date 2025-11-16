@@ -74,7 +74,7 @@ go run ./cmd/qa_service/main.go
 docker exec -it qna_app \
 goose -dir ./migrations postgres \
 "host=db user=postgres password=postgres dbname=qna_db sslmode=disable" up
-````
+```
 
 ---
 
