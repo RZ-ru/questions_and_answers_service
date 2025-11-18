@@ -12,11 +12,11 @@ import (
 )
 
 type AnswerHandler struct {
-	Service services.AnswerService
+	service services.AnswerService
 }
 
 func NewAnswerHandler(s services.AnswerService) *AnswerHandler {
-	return &AnswerHandler{Service: s}
+	return &AnswerHandler{service: s}
 }
 
 func (h *AnswerHandler) CreateAnswer(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +36,7 @@ func (h *AnswerHandler) CreateAnswer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ans, err := h.Service.Create(uint(qid), input.UserID, input.Text)
+	ans, err := h.service.Create(uint(qid), input.UserID, input.Text)
 	if err != nil {
 		log.Warn().
 			Err(err).
@@ -58,7 +58,7 @@ func (h *AnswerHandler) GetAnswer(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, _ := strconv.Atoi(idStr)
 
-	ans, err := h.Service.GetByID(uint(id))
+	ans, err := h.service.GetByID(uint(id))
 	if err != nil {
 		log.Error().Err(err).Uint("id", uint(id)).Msg("failed to get answer")
 		http.Error(w, "not found", http.StatusNotFound)
@@ -77,7 +77,7 @@ func (h *AnswerHandler) DeleteAnswer(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	id, _ := strconv.Atoi(idStr)
 
-	if err := h.Service.Delete(uint(id)); err != nil {
+	if err := h.service.Delete(uint(id)); err != nil {
 		log.Error().
 			Err(err).Uint("id", uint(id)).
 			Msg("failed to delete answer")
